@@ -1,0 +1,205 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "post-on-telegram"
+version = "0.1.0"
+description = "Send messages and documents to Telegram chats through a bot. Designed for long-running programs: never crashes the caller, never leaks the bot token."
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Sourav B. Roy", email = "sourav@example.com"}
+]
+maintainers = [
+    {name = "Sourav B. Roy", email = "sourav@example.com"}
+]
+keywords = [
+    "telegram",
+    "bot",
+    "messaging",
+    "notifications",
+    "trading-bot",
+    "alerts"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Typing :: Typed",
+    "Topic :: Communications :: Chat",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+requires-python = ">=3.9"
+dependencies = [
+    "requests>=2.31,<3",
+]
+optional-dependencies = {
+    "dev": [
+        "pytest>=7.4",
+        "pytest-cov>=4.1",
+        "responses>=0.25",
+        "ruff>=0.5",
+        "mypy>=1.10",
+        "types-requests>=2.31",
+        "build>=1.2",
+        "twine>=5.0",
+    ]
+}
+urls = {
+    "Homepage" = "https://github.com/s13rw81/post-on-telegram",
+    "Issues" = "https://github.com/s13rw81/post-on-telegram/issues",
+    "Changelog" = "https://github.com/s13rw81/post-on-telegram/blob/main/CHANGELOG.md",
+    "Source" = "https://github.com/s13rw81/post-on-telegram",
+}
+
+[project.scripts]
+post-on-telegram = "post_on_telegram.cli:main"
+
+[project.entry-points."console_scripts"]
+post-on-telegram = "post_on_telegram.cli:main"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "src/post_on_telegram/py.typed",
+    "tests/**",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+]
+exclude = [
+    ".github/**",
+    ".env",
+    "credentials*.json",
+    "*.log",
+    "__pycache__/**",
+    ".pytest_cache/**",
+    ".mypy_cache/**",
+    ".ruff_cache/**",
+    ".coverage",
+    "htmlcov/**",
+    ".idea/**",
+    ".vscode/**",
+    "dist/**",
+    "build/**",
+    "*.egg-info/**",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/post_on_telegram"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+src = ["src"]
+exclude = [
+    ".venv",
+    "venv",
+    "dist",
+    "build",
+    "*.egg-info",
+    ".pytest_cache",
+    ".mypy_cache",
+    ".ruff_cache",
+    ".coverage",
+    "htmlcov",
+    ".idea",
+    ".vscode",
+    ".env",
+    "credentials*.json",
+    "tokens",
+    "*.log",
+]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "T20", # print statements
+]
+ignore = [
+    "T201", # print statements allowed in CLI
+]
+per-file-ignores = {
+    "tests/*": ["S101", "T201"],
+}
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+indent-width = 4
+line-ending = "lf"
+
+[tool.mypy]
+python_version = "3.9"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+implicit_reexport = true
+namespace_packages = true
+explicit_package_bases = true
+files = ["src/post_on_telegram"]
+exclude = [
+    "tests",
+    ".venv",
+    "venv",
+    "dist",
+    "build",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "--cov=post_on_telegram",
+    "--cov-report=term-missing",
+    "--cov-fail-under=90",
+]
+markers = [
+    "live: marks tests that require live Telegram credentials (skipped by default)",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+]
+
+[tool.coverage.run]
+source = ["src/post_on_telegram"]
+omit = [
+    "tests/*",
+    "*/__main__.py",
+]
+
+[tool.coverage.report]
+fail_under = 90
+show_missing = true
+precision = 2
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["post_on_telegram*"]
+
+[tool.setuptools.package-dir]
+"" = "src"

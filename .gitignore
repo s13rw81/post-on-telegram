@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*~
+venv/
+.env
+.venv
+
+# Distribution
+dist/
+build/
+*.egg-info/
+
+# Data
+.coverage
+htmlcov/
+
+# IDE
+.idea/
+.vscode/
+
+# Caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Environment
+.env
+credentials*.json
+tokens
+*.log

@@ -1,0 +1,292 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+
+      - name: Run ruff check
+        run: python -m ruff check .
+
+      - name: Run ruff format check
+        run: python -m ruff format --check .
+
+      - name: Run mypy
+        run: python -m mypy src
+
+      - name: Run tests with coverage
+        run: python -m pytest --cov=post_on_telegram
+
+      - name: Build package
+        run: python -m build
+
+      - name: Check package
+        run: python -m twine check dist/*
+
+</write_to_file>
+</task_progress>
+- [x] Create project directory structure
+- [x] Write _version.py
+- [x] Create __init__.py placeholder
+- [x] Create pyproject.toml
+- [x] Write LICENSE
+- [x] Write README.md
+- [x] Create .gitignore
+- [x] Create .editorconfig
+- [x] Create CONTRIBUTING.md
+- [x] Create SECURITY.md
+- [x] Create CHANGELOG.md
+- [x] Implement formatting.py
+- [x] Implement errors.py
+- [x] Implement chunking.py
+- [x] Implement credentials.py
+- [x] Implement poster.py
+- [x] Implement cli.py
+- [x] Implement __main__.py
+- [x] Create py.typed
+- [x] Write examples
+- [x] Write tests/test_credentials.py
+- [x] Write tests/test_chunking.py
+- [x] Write tests/test_formatting.py
+- [x] Write tests/test_poster.py
+- [x] Write tests/test_cli.py
+- [x] Write tests/test_readme_examples.py
+- [x] Write CI/CD workflows
+- [ ] Write issue/PR templates
+- [ ] Verify build and packaging
+- [ ] Run tests, coverage, linting, mypy
+- [ ] Create wheel and sdist, verify contents
+- [ ] Test in fresh venv
+</task_progress>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_FILE>

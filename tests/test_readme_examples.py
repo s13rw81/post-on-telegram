@@ -1,0 +1,867 @@
+import subprocess
+import sys
+import tempfile
+import json
+import os
+import unittest
+
+from post_on_telegram import Poster
+
+
+class TestReadmeExamples(unittest.TestCase):
+    def test_basic_example(self):
+        """Test from examples/basic.py"""
+        poster = Poster()
+        result = poster.send("Hello from Post on Telegram!")
+        self.assertTrue(result)
+
+    def test_html_report_example(self):
+        """Test from examples/html_report.py"""
+        from post_on_telegram import format_pre
+        poster = Poster()
+        report = format_pre("Symbol | Price | Change\n--- | --- | ---\nBTC | 50000 | +2.5%")
+        result = poster.send(report, parse_mode="HTML")
+        self.assertTrue(result)
+
+    def test_credentials_example(self):
+        """Test from examples/credentials.example.json"""
+        poster = Poster()
+        # Should not crash with fake credentials
+        result = poster.send("test")
+        self.assertFalse(result)
+
+    def test_cli_version(self):
+        """Test CLI --version"""
+        result = subprocess.run(
+            [sys.executable, "-m", "post_on_telegram", "--version"],
+            capture_output=True, text=True
+        )
+        self.assertEqual(result.returncode, 0)
+
+    def test_cli_check_no_creds(self):
+        """Test CLI --check without credentials"""
+        result = subprocess.run(
+            [sys.executable, "-m", "post_on_telegram", "--check"],
+            capture_output=True, text=True
+        )
+        self.assertEqual(result.returncode, 2)
+
+    def test_cli_check_with_creds(self):
+        """Test CLI --check with credentials file"""
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+            json.dump({"bot_token": "123456789:AAFakeTokenForTestsOnly_abcdefghijklmnopq",
+                       "chat_id": "-1001234567890"}, f)
+            fname = f.name
+        try:
+            result = subprocess.run(
+                [sys.executable, "-m", "post_on_telegram", "--check", "--credentials", fname],
+                capture_output=True, text=True
+            )
+            self.assertEqual(result.returncode, 0)
+        finally:
+            os.unlink(fname)
+</write_to_file>
+</task_progress>
+- [x] Create project directory structure
+- [x] Write _version.py
+- [x] Create __init__.py placeholder
+- [x] Create pyproject.toml
+- [x] Write LICENSE
+- [x] Write README.md
+- [x] Create .gitignore
+- [x] Create .editorconfig
+- [x] Create CONTRIBUTING.md
+- [x] Create SECURITY.md
+- [x] Create CHANGELOG.md
+- [x] Implement formatting.py
+- [x] Implement errors.py
+- [x] Implement chunking.py
+- [x] Implement credentials.py
+- [x] Implement poster.py
+- [x] Implement cli.py
+- [x] Implement __main__.py
+- [x] Create py.typed
+- [x] Write examples
+- [x] Write tests/test_credentials.py
+- [x] Write tests/test_chunking.py
+- [x] Write tests/test_formatting.py
+- [x] Write tests/test_poster.py
+- [x] Write tests/test_cli.py
+- [x] Write tests/test_readme_examples.py
+- [ ] Write CI/CD workflows
+- [ ] Write issue/PR templates
+- [ ] Verify build and packaging
+- [ ] Run tests, coverage, linting, mypy
+- [ ] Create wheel and sdist, verify contents
+- [ ] Test in fresh venv
+</task_progress>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_file>
+</write_to_FILE>
