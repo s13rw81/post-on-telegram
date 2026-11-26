@@ -128,7 +128,9 @@ Using env vars:
 ```python
 import os
 
-os.environ["POST_ON_TELEGRAM_TOKEN"] = "123456789:AAFakeTokenForTestsOnly_abcdefghijklmnopq"
+os.environ["POST_ON_TELEGRAM_TOKEN"] = (
+    "123456789:AAFakeTokenForTestsOnly_abcdefghijklmnopq"
+)
 os.environ["POST_ON_TELEGRAM_CHAT_ID"] = "-1001234567890"
 
 poster = Poster()
@@ -139,7 +141,8 @@ Explicit token/chat_id:
 
 ```python
 poster = Poster(
-    token="123456789:AAFakeTokenForTestsOnly_abcdefghijklmnopq", chat_id="-1001234567890"
+    token="123456789:AAFakeTokenForTestsOnly_abcdefghijklmnopq",
+    chat_id="-1001234567890",
 )
 poster.send("Hello with explicit credentials!")
 ```
