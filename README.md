@@ -128,9 +128,7 @@ Using env vars:
 ```python
 import os
 
-os.environ["POST_ON_TELEGRAM_TOKEN"] = (
-    "123456789:AAFakeTokenForTestsOnly_abcdefghijklmnopq"
-)
+os.environ["POST_ON_TELEGRAM_TOKEN"] = "123456789:AAFakeTokenForTestsOnly_abcdefghijklmnopq"
 os.environ["POST_ON_TELEGRAM_CHAT_ID"] = "-1001234567890"
 
 poster = Poster()
