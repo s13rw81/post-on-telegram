@@ -127,6 +127,7 @@ Using env vars:
 
 ```python
 import os
+
 os.environ["POST_ON_TELEGRAM_TOKEN"] = "123456789:AAFakeTokenForTestsOnly_abcdefghijklmnopq"
 os.environ["POST_ON_TELEGRAM_CHAT_ID"] = "-1001234567890"
 
@@ -137,7 +138,9 @@ poster.send("Hello from env vars!")
 Explicit token/chat_id:
 
 ```python
-poster = Poster(token="123456789:AAFakeTokenForTestsOnly_abcdefghijklmnopq", chat_id="-1001234567890")
+poster = Poster(
+    token="123456789:AAFakeTokenForTestsOnly_abcdefghijklmnopq", chat_id="-1001234567890"
+)
 poster.send("Hello with explicit credentials!")
 ```
 
@@ -170,7 +173,11 @@ the chunk as plain text (HTML tags stripped for HTML mode).
 ## Long messages and rate limits
 
 Messages longer than `max_message_length` (default 4000) are split into chunks.
-Retries use exponential backoff with jitter; honour `retry_after` on 429.
+Retries use exponential backoff with jitter; honour `retry_after` on 429. If the
+required wait exceeds the remaining `total_timeout` budget, the request gives up
+immediately without sleeping. Invalid `retry_after` values (NaN, negative,
+non-numeric, or HTTP-date headers) are ignored and fall back to exponential
+backoff.
 
 ## Sending files
 
@@ -191,6 +198,7 @@ post-on-telegram --file report.pdf --caption "Report"
 
 ```python
 import logging
+
 logging.basicConfig(level=logging.INFO)
 ```
 
@@ -200,6 +208,7 @@ logging.basicConfig(level=logging.INFO)
 from post_on_telegram import Poster
 
 poster = Poster()
+
 
 def send_alert(message: str) -> None:
     if not poster.send(message):

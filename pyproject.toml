@@ -4,15 +4,12 @@ build-backend = "hatchling.build"
 
 [project]
 name = "post-on-telegram"
-version = "0.1.0"
+dynamic = ["version"]
 description = "Send messages and documents to Telegram chats through a bot. Designed for long-running programs: never crashes the caller, never leaks the bot token."
 readme = "README.md"
 license = {text = "MIT"}
 authors = [
-    {name = "Sourav B. Roy", email = "sourav@example.com"}
-]
-maintainers = [
-    {name = "Sourav B. Roy", email = "sourav@example.com"}
+    {name = "Sourav B. Roy"}
 ]
 keywords = [
     "telegram",
@@ -41,34 +38,34 @@ requires-python = ">=3.9"
 dependencies = [
     "requests>=2.31,<3",
 ]
-optional-dependencies = {
-    "dev": [
-        "pytest>=7.4",
-        "pytest-cov>=4.1",
-        "responses>=0.25",
-        "ruff>=0.5",
-        "mypy>=1.10",
-        "types-requests>=2.31",
-        "build>=1.2",
-        "twine>=5.0",
-    ]
-}
-urls = {
-    "Homepage" = "https://github.com/s13rw81/post-on-telegram",
-    "Issues" = "https://github.com/s13rw81/post-on-telegram/issues",
-    "Changelog" = "https://github.com/s13rw81/post-on-telegram/blob/main/CHANGELOG.md",
-    "Source" = "https://github.com/s13rw81/post-on-telegram",
-}
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4",
+    "pytest-cov>=4.1",
+    "responses>=0.25",
+    "ruff>=0.5",
+    "mypy>=1.10",
+    "types-requests>=2.31",
+    "build>=1.2",
+    "twine>=5.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/s13rw81/post-on-telegram"
+Issues = "https://github.com/s13rw81/post-on-telegram/issues"
+Changelog = "https://github.com/s13rw81/post-on-telegram/blob/main/CHANGELOG.md"
+Source = "https://github.com/s13rw81/post-on-telegram"
 
 [project.scripts]
 post-on-telegram = "post_on_telegram.cli:main"
 
-[project.entry-points."console_scripts"]
-post-on-telegram = "post_on_telegram.cli:main"
+[tool.hatch.version]
+path = "src/post_on_telegram/_version.py"
 
 [tool.hatch.build.targets.sdist]
 include = [
-    "src/post_on_telegram/py.typed",
+    "src/post_on_telegram/**",
     "tests/**",
     "README.md",
     "LICENSE",
@@ -90,6 +87,9 @@ exclude = [
     "dist/**",
     "build/**",
     "*.egg-info/**",
+    "SPEC.md",
+    "AUDIT.md",
+    ".progress.md",
 ]
 
 [tool.hatch.build.targets.wheel]
@@ -132,18 +132,16 @@ select = [
 ignore = [
     "T201", # print statements allowed in CLI
 ]
-per-file-ignores = {
-    "tests/*": ["S101", "T201"],
-}
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101", "T201"]
 
 [tool.ruff.format]
 quote-style = "double"
 indent-style = "space"
-indent-width = 4
 line-ending = "lf"
 
 [tool.mypy]
-python_version = "3.9"
+python_version = "3.10"
 strict = true
 warn_return_any = true
 warn_unused_configs = true
@@ -196,10 +194,3 @@ omit = [
 fail_under = 90
 show_missing = true
 precision = 2
-
-[tool.setuptools.packages.find]
-where = ["src"]
-include = ["post_on_telegram*"]
-
-[tool.setuptools.package-dir]
-"" = "src"

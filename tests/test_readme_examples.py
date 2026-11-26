@@ -1,867 +1,125 @@
-import subprocess
-import sys
-import tempfile
 import json
 import os
+import tempfile
 import unittest
 
-from post_on_telegram import Poster
+import responses
+
+from post_on_telegram import Poster, escape_markdown_v2, format_pre
+
+CANARY = "123456789:AAFakeTokenForTestsOnly_abcdefghijklmnopq"
+CHAT_ID = "-1001234567890"
 
 
 class TestReadmeExamples(unittest.TestCase):
-    def test_basic_example(self):
-        """Test from examples/basic.py"""
-        poster = Poster()
-        result = poster.send("Hello from Post on Telegram!")
-        self.assertTrue(result)
+    def setUp(self):
+        self.temp_dir = tempfile.TemporaryDirectory()
+        self.creds_file = os.path.join(self.temp_dir.name, "credentials.json")
+        with open(self.creds_file, "w", encoding="utf-8") as f:
+            json.dump({"bot_token": CANARY, "chat_id": CHAT_ID}, f)
+        self.orig_env = os.environ.copy()
 
-    def test_html_report_example(self):
-        """Test from examples/html_report.py"""
-        from post_on_telegram import format_pre
-        poster = Poster()
-        report = format_pre("Symbol | Price | Change\n--- | --- | ---\nBTC | 50000 | +2.5%")
-        result = poster.send(report, parse_mode="HTML")
-        self.assertTrue(result)
+    def tearDown(self):
+        self.temp_dir.cleanup()
+        for k in ["POST_ON_TELEGRAM_TOKEN", "POST_ON_TELEGRAM_CHAT_ID"]:
+            os.environ.pop(k, None)
+        os.environ.update(self.orig_env)
 
-    def test_credentials_example(self):
-        """Test from examples/credentials.example.json"""
-        poster = Poster()
-        # Should not crash with fake credentials
-        result = poster.send("test")
-        self.assertFalse(result)
+    @responses.activate
+    def test_quickstart_basic_send(self):
+        """README: Quick start -> Basic send"""
+        url = f"https://api.telegram.org/bot{CANARY}/sendMessage"
+        responses.add(responses.POST, url, json={"ok": True, "result": {}}, status=200)
 
-    def test_cli_version(self):
-        """Test CLI --version"""
-        result = subprocess.run(
-            [sys.executable, "-m", "post_on_telegram", "--version"],
-            capture_output=True, text=True
+        poster = Poster(token=CANARY, chat_id=CHAT_ID)
+        ok = poster.send("Hello, world!")
+        self.assertTrue(ok)
+
+    @responses.activate
+    def test_quickstart_env_vars(self):
+        """README: Quick start -> Using env vars"""
+        os.environ["POST_ON_TELEGRAM_TOKEN"] = CANARY
+        os.environ["POST_ON_TELEGRAM_CHAT_ID"] = CHAT_ID
+
+        url = f"https://api.telegram.org/bot{CANARY}/sendMessage"
+        responses.add(responses.POST, url, json={"ok": True, "result": {}}, status=200)
+
+        poster = Poster()
+        ok = poster.send("Hello from env vars!")
+        self.assertTrue(ok)
+
+    @responses.activate
+    def test_quickstart_explicit_credentials(self):
+        """README: Quick start -> Explicit token/chat_id"""
+        url = f"https://api.telegram.org/bot{CANARY}/sendMessage"
+        responses.add(responses.POST, url, json={"ok": True, "result": {}}, status=200)
+
+        poster = Poster(token=CANARY, chat_id=CHAT_ID)
+        ok = poster.send("Hello with explicit credentials!")
+        self.assertTrue(ok)
+
+    @responses.activate
+    def test_quickstart_check_boolean_and_last_error(self):
+        """README: Quick start -> Check boolean result and last error"""
+        url = f"https://api.telegram.org/bot{CANARY}/sendMessage"
+        responses.add(
+            responses.POST, url, json={"ok": False, "description": "Unauthorized"}, status=401
         )
-        self.assertEqual(result.returncode, 0)
 
-    def test_cli_check_no_creds(self):
-        """Test CLI --check without credentials"""
-        result = subprocess.run(
-            [sys.executable, "-m", "post_on_telegram", "--check"],
-            capture_output=True, text=True
+        poster = Poster(token=CANARY, chat_id=CHAT_ID)
+        if poster.send("Hello!"):
+            result = "Sent!"
+        else:
+            result = f"Failed: {poster.last_error}"
+        self.assertIn("Failed:", result)
+
+    @responses.activate
+    def test_formatting_examples(self):
+        """README: Formatting -> plain, HTML, MarkdownV2, format_pre"""
+        url = f"https://api.telegram.org/bot{CANARY}/sendMessage"
+        responses.add(responses.POST, url, json={"ok": True, "result": {}}, status=200)
+
+        poster = Poster(token=CANARY, chat_id=CHAT_ID)
+        self.assertTrue(poster.send("Hello!"))
+        self.assertTrue(poster.send("Hello <b>world</b>!", parse_mode="HTML"))
+        self.assertTrue(
+            poster.send(escape_markdown_v2("**Hello** world!"), parse_mode="MarkdownV2")
         )
-        self.assertEqual(result.returncode, 2)
 
-    def test_cli_check_with_creds(self):
-        """Test CLI --check with credentials file"""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
-            json.dump({"bot_token": "123456789:AAFakeTokenForTestsOnly_abcdefghijklmnopq",
-                       "chat_id": "-1001234567890"}, f)
-            fname = f.name
-        try:
-            result = subprocess.run(
-                [sys.executable, "-m", "post_on_telegram", "--check", "--credentials", fname],
-                capture_output=True, text=True
-            )
-            self.assertEqual(result.returncode, 0)
-        finally:
-            os.unlink(fname)
-</write_to_file>
-</task_progress>
-- [x] Create project directory structure
-- [x] Write _version.py
-- [x] Create __init__.py placeholder
-- [x] Create pyproject.toml
-- [x] Write LICENSE
-- [x] Write README.md
-- [x] Create .gitignore
-- [x] Create .editorconfig
-- [x] Create CONTRIBUTING.md
-- [x] Create SECURITY.md
-- [x] Create CHANGELOG.md
-- [x] Implement formatting.py
-- [x] Implement errors.py
-- [x] Implement chunking.py
-- [x] Implement credentials.py
-- [x] Implement poster.py
-- [x] Implement cli.py
-- [x] Implement __main__.py
-- [x] Create py.typed
-- [x] Write examples
-- [x] Write tests/test_credentials.py
-- [x] Write tests/test_chunking.py
-- [x] Write tests/test_formatting.py
-- [x] Write tests/test_poster.py
-- [x] Write tests/test_cli.py
-- [x] Write tests/test_readme_examples.py
-- [ ] Write CI/CD workflows
-- [ ] Write issue/PR templates
-- [ ] Verify build and packaging
-- [ ] Run tests, coverage, linting, mypy
-- [ ] Create wheel and sdist, verify contents
-- [ ] Test in fresh venv
-</task_progress>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_file>
-</write_to_FILE>
+        table = format_pre("a | b\n--- | ---\n1 | 2")
+        self.assertTrue(poster.send(table, parse_mode="HTML"))
+
+    @responses.activate
+    def test_send_document_example(self):
+        """README: Sending files"""
+        url = f"https://api.telegram.org/bot{CANARY}/sendDocument"
+        responses.add(responses.POST, url, json={"ok": True, "result": {}}, status=200)
+
+        doc_path = os.path.join(self.temp_dir.name, "file.pdf")
+        with open(doc_path, "wb") as f:
+            f.write(b"%PDF-1.4 mock")
+
+        poster = Poster(token=CANARY, chat_id=CHAT_ID)
+        ok = poster.send_document(doc_path, caption="Report")
+        self.assertTrue(ok)
+
+    def test_readme_cli_flags_exist_in_argparse(self):
+        """Verify all CLI flags shown in README exist in the argparse parser."""
+        from post_on_telegram.cli import _build_parser
+
+        parser = _build_parser()
+        options = parser._option_string_actions.keys()
+
+        expected_flags = [
+            "--credentials",
+            "--parse-mode",
+            "--no-preview",
+            "--silent",
+            "--chat-id",
+            "--file",
+            "--caption",
+            "--check",
+            "--version",
+        ]
+        for flag in expected_flags:
+            self.assertIn(flag, options)

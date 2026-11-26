@@ -1,32 +1,35 @@
 # Python
 __pycache__/
-*.pyc
-*.pyo
+*.py[cod]
+*$py.class
 *~
 venv/
+.venv/
 .env
-.venv
 
-# Distribution
+# Distribution / packaging
 dist/
 build/
 *.egg-info/
 
-# Data
+# Coverage / Testing
 .coverage
 htmlcov/
-
-# IDE
-.idea/
-.vscode/
-
-# Caches
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
 
-# Environment
-.env
+# IDEs
+.idea/
+.vscode/
+
+# Secrets & logs
 credentials*.json
+!examples/credentials.example.json
 tokens
 *.log
+
+# Temporary build specification and progress logs
+.progress.md
+AUDIT.md
+SPEC.md

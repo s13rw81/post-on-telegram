@@ -1,6 +1,8 @@
 # src/post_on_telegram/formatting.py
 """Text formatting helpers for Telegram messages."""
 
+from __future__ import annotations
+
 
 def escape_html(text: str) -> str:
     """Escape HTML special characters: &, <, >.
@@ -11,9 +13,9 @@ def escape_html(text: str) -> str:
     Returns:
         The text with &, <, > escaped as HTML entities.
     """
-    text = text.replace("&", "&")
-    text = text.replace("<", "<")
-    text = text.replace(">", ">")
+    text = text.replace("&", "&amp;")
+    text = text.replace("<", "&lt;")
+    text = text.replace(">", "&gt;")
     return text
 
 
@@ -46,41 +48,3 @@ def format_pre(text: str) -> str:
     """
     escaped = escape_html(text)
     return f"<pre>{escaped}</pre>"
-</write_to_file>
-<task_progress>
-- [x] Create project directory structure
-- [x] Write _version.py
-- [x] Create __init__.py placeholder
-- [x] Create pyproject.toml
-- [x] Write LICENSE
-- [x] Write README.md
-- [x] Create .gitignore
-- [x] Create .editorconfig
-- [x] Create CONTRIBUTING.md
-- [x] Create SECURITY.md
-- [x] Create CHANGELOG.md
-- [x] Implement formatting.py
-- [x] Implement errors.py
-- [x] Implement chunking.py
-- [x] Implement credentials.py
-- [x] Implement poster.py
-- [x] Implement cli.py
-- [x] Implement __main__.py
-- [x] Create py.typed
-- [x] Write examples
-- [x] Write tests/test_credentials.py
-- [x] Write tests/test_chunking.py
-- [x] Write tests/test_formatting.py
-- [x] Write tests/test_poster.py
-- [x] Write tests/test_cli.py
-- [x] Write tests/test_readme_examples.py
-- [ ] Write CI/CD workflows
-- [ ] Write issue/PR templates
-- [ ] Create examples/credentials.example.json
-- [ ] Verify build and packaging
-- [ ] Run tests, coverage, linting, mypy
-- [ ] Create wheel and sdist, verify contents
-- [ ] Test in fresh venv
-</task_progress>
-</write_to_file>
-</tool_call>
