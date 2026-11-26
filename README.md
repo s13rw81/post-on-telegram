@@ -1,7 +1,7 @@
 # Post on Telegram
 
 [![CI](https://github.com/s13rw81/post-on-telegram/actions/workflows/ci.yml/badge.svg)](https://github.com/s13rw81/post-on-telegram/actions/workflows/ci.yml)
-[![Python Versions](https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue)](https://www.python.org/downloads/)
+[![Python Versions](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Typing](https://img.shields.io/badge/typing-%3CTyped%3E-blue)](https://peps.python.org/pep-0487/)
 
